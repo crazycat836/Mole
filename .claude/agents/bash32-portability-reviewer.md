@@ -1,6 +1,6 @@
 ---
 name: bash32-portability-reviewer
-description: Reviews Mole shell and Bats diffs against the current macOS Bash 3.2, errexit, timeout, TTY, BSD-tool, and CI-runner pitfalls recorded in AGENTS.md. Use after changes under mole, install.sh, bin/**, lib/**, scripts/**, or tests/*.bats.
+description: Read-only reviewer for Mole shell and Bats diffs. Checks the touched code against every pitfall in .claude/skills/bugs/references/shell-and-test-pitfalls.md (Bash 3.2 nounset and arrays, errexit through `||`/`if`, unbounded commands, TTY and stdin theft, BSD-vs-GNU flags, macOS CI-runner quirks, vacuous Bats assertions). Use after changes under mole, install.sh, bin/**, lib/**, scripts/**, or tests/*.bats. Returns LANDMINE / UNVERIFIED lines and a single VERDICT line; never edits files. Not for Go code, style, or destructive-action safety (use safety-reviewer for that).
 tools: Read, Grep, Glob, Bash
 ---
 

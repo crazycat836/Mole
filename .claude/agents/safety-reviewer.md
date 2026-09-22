@@ -1,6 +1,6 @@
 ---
 name: safety-reviewer
-description: Audits Mole changes for destructive-action regressions across deletion, app protection, privilege boundaries, dry-run behavior, operation logging, package-manager cleanup, and exact leftover matching. Use before merging changes under lib/clean/**, lib/uninstall/**, lib/manage/**, bin/clean.sh, bin/purge.sh, bin/uninstall.sh, bin/installer.sh, lib/core/file_ops.sh, or lib/core/app_protection*.sh.
+description: Read-only audit of Mole changes for destructive-action regressions across deletion, app protection, privilege boundaries, dry-run behavior, operation logging, package-manager cleanup, and exact leftover matching. Use before merging changes under lib/clean/**, lib/uninstall/**, lib/manage/**, bin/clean.sh, bin/purge.sh, bin/uninstall.sh, bin/installer.sh, lib/core/file_ops.sh, or lib/core/app_protection*.sh. Returns findings ordered P0/P1/P2 with a one-line fix each and ends with a VERDICT line; never edits files. Not for style, speculative refactors, Bash 3.2 portability (use bash32-portability-reviewer), or Go test patterns.
 tools: Read, Grep, Glob, Bash
 ---
 

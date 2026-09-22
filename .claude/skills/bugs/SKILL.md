@@ -5,7 +5,7 @@ description: "Mole's project-specific incident catalog: twelve recurring bug sha
 
 # Mole bug patterns
 
-Use this project-specific catalog after reading the current diff and code. Generic pattern sweeps belong to Waza `check` Pattern-Fix Completeness; root-causing a live symptom belongs to `hunt`.
+Use this project-specific catalog after reading the current diff and code. Generic pattern sweeps and root-causing a live symptom are outside this catalog; it only tells you which recurring Mole shapes to look for and how to probe for them.
 
 Load only the archetypes signaled by the symptom or touched surface, then use their probes to sweep siblings. A whole-project audit should classify surfaces before opening sections instead of treating all twelve as a mandatory checklist. Read [references/shell-and-test-pitfalls.md](references/shell-and-test-pitfalls.md) only for Shell code, Bats tests, install/update flows, timeout wrappers, TTY handling, plist fixtures, or macOS-specific CI.
 
@@ -71,7 +71,7 @@ The method: for each predicate, list every way the subject can legitimately exis
 Protection that lives at the call site instead of in the funnel will be missing from the next call site.
 
 - `should_protect_path` ran only inside the real-clean branch, so `--dry-run` promised to remove files the real run silently skipped (`cfe14601`).
-- The user whitelist was consulted per caller, so one `clean_*` function simply forgot it on a system sweep. The fix hoisted the check into `safe_find_delete` and `safe_sudo_find_delete` next to the existing protection gate, so future callers get it for free (`5498edd1`). The forgetful caller has since been renamed; the commit names it, and this line deliberately does not, because a dead symbol here reads as a stale catalog.
+- The user whitelist was consulted per caller, so one `clean_*` function simply forgot it on a system sweep. The fix hoisted the check into `safe_find_delete` and `safe_sudo_find_delete` next to the existing protection gate, so future callers get it for free (`5498edd1`).
 - A Raycast v2 exclusion existed in one place but not in the `find` predicates that actually ran (`452e194d`).
 - `_safe_clean_impl` ran its delete guard only on the real branch, so dry-run previewed (and counted) items an active-process guard would refuse at the same moment. The guard must run after protected, whitelisted, compiled-cache, and missing targets are filtered, but before any preview registration; otherwise dry-run can report a stopped cleanup whose real candidate set is empty (`3f42ad39`).
 
@@ -190,7 +190,7 @@ The mirror image is also a test defect, not a product bug. A case that fails in 
 
 A guard with many independent failure causes and one message. The user cannot act, and the maintainer cannot triage, so the report arrives as "it does not work" and the fix targets whichever wording was quoted.
 
-`acquire_install_lock` refused for an untrusted ancestor, a denied `sudo -n`, an unusable lock directory, a lock path replaced by a symlink or fifo, a missing `/usr/bin/lockf`, and genuine contention. All printed one line about the lock being unavailable. Counting the causes is the probe, but do not quote the count here: it moves with every refactor, and a number this file cannot measure reads as rot the next time someone checks it. Three things followed, and each is worth checking for separately:
+`acquire_install_lock` refused for an untrusted ancestor, a denied `sudo -n`, an unusable lock directory, a lock path replaced by a symlink or fifo, a missing `/usr/bin/lockf`, and genuine contention. All printed one line about the lock being unavailable. Count the distinct causes against the distinct messages each time; the number moves with every refactor. Three things followed, and each is worth checking for separately:
 
 - **The reporter did the triage.** #1335 reverse-engineered `install_lock_has_unsafe_ancestor` by hand from the source to learn why a plain install failed.
 - **A new gate silently downgraded an older diagnosis.** `d4a4b80c` already printed the actionable `Cache credentials first, then retry: sudo -v && mo update` for a missing admin session. `e2020772` put the lock in front of it, hit the same condition first, and reported it as a busy lock. Nothing failed; the diagnosis just got worse. When adding a gate ahead of an existing failure path, read what the old path said and keep the new one at least as actionable.
